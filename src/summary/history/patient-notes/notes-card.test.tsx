@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { render, cleanup, wait, act } from "@testing-library/react";
-import { mockPatient } from "../../../__mocks__/patient.mock";
-import { mockPatientEncounters } from "../../../__mocks__/encounters.mock";
+import { mockPatient } from "../../../../__mocks__/patient.mock";
+import { mockPatientEncounters } from "../../../../__mocks__/encounters.mock";
 import { encounterResource } from "./encounter.resource";
 import NotesCard from "./notes-card.component";
 const mockFetchPatientEncounters = encounterResource as jest.Mock;

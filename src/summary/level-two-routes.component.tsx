@@ -3,6 +3,7 @@ import { match, Switch, Route } from "react-router";
 import { AllergyCardLevelTwo } from "./history/allergy-card-level-two.component";
 import { getCurrentPatient } from "@openmrs/esm-api";
 import DimensionsCardLevelTwo from "./documentation/dimensions-card-level-two.component";
+import PatientNotes from "./history/patient-notes/patient-notes.component";
 
 export function LevelTwoRoutes(props: LevelTwoRoutesProps) {
   const [currentPatient, setCurrentPatient] = React.useState(null);
@@ -33,6 +34,16 @@ export function LevelTwoRoutes(props: LevelTwoRoutesProps) {
             path={`/patient/:patientUuid/chart/dimensions`}
             render={routeProps => (
               <DimensionsCardLevelTwo
+              match={props.match}
+              currentPatient={currentPatient}
+            />
+          )}
+        />
+        <Route
+            exact
+            path={`/patient/:patientUuid/chart/notes`}
+            render={routeProps => (
+              <PatientNotes
                 match={props.match}
                 currentPatient={currentPatient}
               />

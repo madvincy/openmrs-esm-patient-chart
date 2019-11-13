@@ -4,7 +4,7 @@ import SummarySectionCards from "../cards/summary-section-cards.component";
 import AllergyCard from "./allergy-card.component";
 import { getCurrentPatient } from "@openmrs/esm-api";
 import ConditionsCard from "./conditions-card.component";
-import NotesCard from "./notes-card.component";
+import NotesCard from "./patient-notes/notes-card.component";
 
 export default function HistorySection(props: HistorySectionProps) {
   const [currentPatient, setCurrentPatient] = React.useState(null);

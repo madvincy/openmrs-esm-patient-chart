@@ -7,11 +7,8 @@ export default function SummaryCardFooter(props: SummaryCardFooterProps) {
     return <div className={styles.row}>{props.children}</div>;
   }
   return (
-    <Link to={props.linkTo} className={`omrs-unstyled ${styles.row}`}>
+    <Link to={props.linkTo} className={styles.row}>
       {props.children}
-      <svg className="omrs-icon" fill="var(--omrs-color-ink-low-contrast)">
-        <use xlinkHref="#omrs-icon-chevron-right" />
-      </svg>
     </Link>
   );
 }

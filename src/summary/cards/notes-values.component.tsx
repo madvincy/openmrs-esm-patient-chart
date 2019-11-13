@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./notes-values.css";
+import { BooleanLiteral } from "@babel/types";
 
 export default function NotesValues(props: NotesValuesProps) {
   return (
@@ -13,7 +14,7 @@ export default function NotesValues(props: NotesValuesProps) {
           {props.specialKey && <sup>{"\u002A"}</sup>}
         </label>
       )}
-      {props.location && (
+      {!props.header && (
         <div className={styles.verticalLabelValue}>
           <label
             className={
@@ -28,6 +29,23 @@ export default function NotesValues(props: NotesValuesProps) {
             title={props.label}
           >
             {props.location || "\u2014"}
+          </div>
+        </div>
+      )}
+      {props.header && (
+        <div className={styles.root2}>
+          <label
+            className={props.labelClassName || "omrs-type-body-regular"}
+            style={props.labelStyles}
+          >
+            {props.label}
+            {props.specialKey && <sup>{"\u002A"}</sup>}
+          </label>
+          <div
+            className={props.valueClassName || "omrs-type-body-regular"}
+            style={props.valueStyles}
+          >
+            {props.value || "\u2014"}
           </div>
         </div>
       )}
@@ -55,13 +73,18 @@ NotesValues.defaultProps = {
 type NotesValuesProps = {
   date?: string;
   label: string;
-  location: React.ReactNode;
+  location?: React.ReactNode;
+  header?: boolean;
   author?: any;
   authorStyles?: React.CSSProperties;
   locationStyles?: React.CSSProperties;
   dateStyles?: React.CSSProperties;
   specialKey: boolean;
   labelClassName?: string;
+  value?: React.ReactNode;
+  valueStyles?: React.CSSProperties;
+  labelStyles?: React.CSSProperties;
+  valueClassName?: string;
   locationClassName?: string;
   dateClassName?: string;
   authorClassName?: string;
