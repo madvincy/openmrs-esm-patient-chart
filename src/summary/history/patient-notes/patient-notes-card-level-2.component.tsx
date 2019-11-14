@@ -2,7 +2,7 @@ import React from "react";
 import { match } from "react-router";
 import NotesCard from "./notes-card.component";
 import Styles from "./patient-notes-style.css";
-import { encounterResource } from "./encounter.resource";
+import { getEncounters } from "./encounter.resource";
 
 export default function PatientNotes(props: PatientNotesCardProps) {
   const properties = {
@@ -10,7 +10,7 @@ export default function PatientNotes(props: PatientNotesCardProps) {
     width: "100.0rem",
     Headers: {
       date: "DATE",
-      notes: "NOTES",
+      notes: "NOTE",
       location: "LOCATION",
       author: "AUTHOR"
     }

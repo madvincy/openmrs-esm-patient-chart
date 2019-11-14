@@ -4,18 +4,15 @@ import { match } from "react-router";
 import dayjs from "dayjs";
 import { createErrorHandler } from "@openmrs/esm-error-handling";
 
-import { encounterResource } from "./encounter.resource";
+import { getEncounters } from "./encounter.resource";
 import SummaryCard from "../../cards/summary-card.component";
-import SummaryCardRow from "../../cards/summary-card-row.component";
-import SummaryCardRowContent from "../../cards/summary-card-row-content.component";
-import NotesValues from "../../cards/notes-values.component";
-import SummaryCardFooter from "../../cards/summary-card-footer.component";
 import style from "./notes-card-style.css";
+import { Link } from "react-router-dom";
 
 export default function NotesCard(props: NotesCardProps) {
   const defaultHeaders = {
     date: "Date",
-    notes: "Encounter Type",
+    notes: "Encounter Type,",
     location: "Location",
     author: "Author"
   };
@@ -31,7 +28,7 @@ export default function NotesCard(props: NotesCardProps) {
       setShowMore(props.properties.showMore);
       setNotesHeaders(props.properties.Headers);
     }
-    encounterResource(props.currentPatient.identifier[0].value, abortController)
+    getEncounters(props.currentPatient.identifier[0].value, abortController)
       .then(({ data }) => {
         if (data.total > 0) {
           setPatientNotes(getNotes(data.entry));
@@ -43,67 +40,116 @@ export default function NotesCard(props: NotesCardProps) {
 
   return (
     <SummaryCard name="Notes" match={props.match} styles={{ width: width }}>
-      <SummaryCardRow>
-        <SummaryCardRowContent justifyContent="space-between">
-          <NotesValues
-            date={notesHeaders.date}
-            dateStyles={{ color: "var(--omrs-color-ink-medium-contrast)" }}
-            label={notesHeaders.notes}
-            specialKey={true}
-            labelStyles={{ color: "var(--omrs-color-ink-medium-contrast)" }}
-            header={true}
-            value={notesHeaders.location}
-            valueStyles={{ color: "var(--omrs-color-ink-medium-contrast)" }}
-            author={notesHeaders.author}
-            authorStyles={{ color: "var(--omrs-color-ink-medium-contrast)" }}
-          />
-        </SummaryCardRowContent>
-      </SummaryCardRow>
-      {patientNotes &&
-        patientNotes.slice(0, showMore ? patientNotes.length : 1).map(note => {
-          return (
-            <SummaryCardRow key={note.id} linkTo="/notes">
-              <NotesValues
-                date={convertDate(note.location[0].period.end)}
-                dateClassName="omrs-bold"
-                dateStyles={{ alignContent: "left" }}
-                label={note.type[0].coding[0].display}
-                labelClassName="omrs-bold"
-                location={note.location[0].location.display}
-                locationStyles={{
-                  color: "var(--omrs-color-ink-medium-contrast)"
-                }}
-                author={getAuthorName(note.extension)}
-                authorClassName="omrs-bold"
-              />
-            </SummaryCardRow>
-          );
-        })}
-      <SummaryCardFooter
-        linkTo={`/patient/${props.currentPatient.id}/chart/notes`}
-      >
+      <table className={style.table}>
+        <thead>
+          <tr className={style.tableRow}>
+            <th className={`${style.tableHeader} ${style.tableDates}`}>
+              {notesHeaders.date}
+            </th>
+            <th className={style.tableHeader}>
+              {notesHeaders.notes}{" "}
+              {showMore && (
+                <svg
+                  className="omrs-icon"
+                  fill="var(--omrs-color-ink-low-contrast)"
+                >
+                  <use xlinkHref="#omrs-icon-arrow-downward" />
+                </svg>
+              )}{" "}
+              {notesHeaders.location}
+            </th>
+            <th className={style.tableHeader}>{notesHeaders.author}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {patientNotes &&
+            patientNotes
+              .slice(0, showMore ? patientNotes.length : 2)
+              .map(note => {
+                return (
+                  <tr key={note.id} className={style.tableRow}>
+                    <td
+                      className={style.tableData}
+                      style={{ textAlign: "start" }}
+                    >
+                      <span style={{ fontWeight: 500 }}>
+                        {convertDate(note.location[0].period.end)}
+                      </span>{" "}
+                    </td>
+                    <td
+                      className={style.tableData}
+                      style={{ textAlign: "start" }}
+                    >
+                      <span style={{ fontWeight: 500 }}>
+                        {note.type[0].coding[0].display}
+                      </span>
+                      <br></br>
+                      <span
+                        style={{
+                          fontWeight: 500,
+                          color: "var(--omrs-color-ink-medium-contrast)"
+                        }}
+                      >
+                        {note.location[0].location.display}
+                      </span>{" "}
+                    </td>
+                    <td
+                      className={style.tableData}
+                      style={{ textAlign: "start" }}
+                    >
+                      <span style={{ fontWeight: 500 }}>
+                        {getAuthorName(note.extension)}
+                      </span>{" "}
+                    </td>
+
+                    <td style={{ textAlign: "end" }}>
+                      <svg
+                        className="omrs-icon"
+                        fill="var(--omrs-color-ink-low-contrast)"
+                      >
+                        <use xlinkHref="#omrs-icon-chevron-right" />
+                      </svg>
+                    </td>
+                  </tr>
+                );
+              })}
+        </tbody>
         {!showMore ? (
-          <div className={style.moreNotes}>
-            <svg className="omrs-icon">
-              <use
-                xlinkHref="#omrs-icon-chevron-right"
-                fill="var(--omrs-color-ink-low-contrast)"
-              ></use>
-            </svg>
-            <p>See all</p>
-          </div>
+          <tfoot>
+            <tr className={style.tfoot}>
+              <td className={style.moreNotes}>
+                <Link
+                  to={`/patient/${props.currentPatient.id}/chart/notes`}
+                  className={style.moreNotes}
+                >
+                  <svg className="omrs-icon">
+                    <use
+                      xlinkHref="#omrs-icon-chevron-right"
+                      fill="var(--omrs-color-ink-low-contrast)"
+                    ></use>
+                  </svg>{" "}
+                  {"See all"}
+                </Link>
+              </td>
+            </tr>
+          </tfoot>
         ) : (
-          <div className={style.moreNotes}>
-            <svg className="omrs-icon">
-              <use
-                xlinkHref="#omrs-icon-chevron-right"
-                fill="var(--omrs-color-ink-low-contrast)"
-              ></use>
-            </svg>
-            <p>Pagination</p>
-          </div>
+          <tfoot>
+            <tr className={style.moreNotes}>
+              <td className={style.moreNotes}>
+                <svg className="omrs-icon">
+                  <use
+                    xlinkHref="#omrs-icon-chevron-right"
+                    fill="var(--omrs-color-ink-low-contrast)"
+                  ></use>
+                </svg>{" "}
+                {"Pagination"}
+              </td>
+            </tr>
+          </tfoot>
         )}
-      </SummaryCardFooter>
+      </table>
     </SummaryCard>
   );
 }
